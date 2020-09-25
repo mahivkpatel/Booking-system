@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "proxima_novaregular";
+  font-weight: normal;
+  font-style: normal;
+}
+.App {
+  text-align: center;
+  .header {
+    padding: 10px;
+    background: #edf2f4;
+    border-bottom: 1px solid #999;
+    a {
+      color: #0072ff;
+      text-decoration: none;
+      margin-left: 20px;
+      margin-right: 5px;
+    }
+    a:hover {
+      color: #8a0f53;
+    }
+    .active {
+      color: #2c7613;
+    }
+  }
+  .content {
+    padding: 20px;
+  }
+}
