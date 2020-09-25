@@ -3,8 +3,18 @@
   font-weight: normal;
   font-style: normal;
 }
+
 .App {
   text-align: center;
+  overflow: auto;
+  height: 100vh;
+  z-index: 9;
+  position: relative;
+  overflow-x: hidden;
+  .sidebarImageLogin{
+    float: left;
+    width: 100%;
+  }
   .header {
     padding: 10px;
     background: #edf2f4;
@@ -22,7 +32,7 @@
       color: #2c7613;
     }
   }
-  .content {
-    padding: 20px;
-  }
+  //.content {
+  //  padding: 5px;
+  //}
 }
