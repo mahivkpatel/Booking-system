@@ -1,43 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Image } from "react-bootstrap";
+import { Link, useLocation } from 'react-router-dom';
+import './index.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { userActions } from '../../Actions/loginAction.js';
 
-function Login(props) {
-    const username = useFormInput('');
-    const password = useFormInput('');
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+function LoginPage() {
+    const [inputs, setInputs] = useState({
+        username: '',
+        password: ''
+    });
+    const [submitted, setSubmitted] = useState(false);
+    const { username, password } = inputs;
+    const loggingIn = useSelector(state => state.authentication.loggingIn);
+    const dispatch = useDispatch();
+    const location = useLocation();
 
-    // handle button click of login form
-    const handleLogin = () => {
-        props.history.push('/dashboard');
+    // reset login status
+    useEffect(() => {
+        dispatch(userActions.logout());
+    }, []);
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setInputs(inputs => ({ ...inputs, [name]: value }));
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        setSubmitted(true);
+        if (username && password) {
+            // get return url from location state or default to home page
+            const { from } = location.state || { from: { pathname: "/" } };
+            dispatch(userActions.login(username, password, from));
+        }
     }
 
     return (
-        <div>
-            Login<br /><br />
-            <div>
-                Username<br />
-                <input type="text" {...username} autoComplete="new-password" />
+        <div className="row p-0">
+            <div className="col-5 p-0">
+                <Image src="https://wallpapershome.com/images/pages/pic_v/2867.jpg" alt="login-img" className="sidebarImageLogin"></Image>
             </div>
-            <div style={{ marginTop: 10 }}>
-                Password<br />
-                <input type="password" {...password} autoComplete="new-password" />
+            <div className="col-7 p-lg-5">
+            <h2>Login</h2>
+            <form name="form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" value={username} onChange={handleChange} className={'form-control' + (submitted && !username ? ' is-invalid' : '')} />
+                    {submitted && !username &&
+                    <div className="invalid-feedback">Username is required</div>
+                    }
+                </div>
+                <div className="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" value={password} onChange={handleChange} className={'form-control' + (submitted && !password ? ' is-invalid' : '')} />
+                    {submitted && !password &&
+                    <div className="invalid-feedback">Password is required</div>
+                    }
+                </div>
+                <div className="form-group">
+                    <button className="btn btn-primary">
+                        {loggingIn && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                        Login
+                    </button>
+                    <Link to="/register" className="btn btn-link">Register</Link>
+                </div>
+            </form>
             </div>
-            {error && <><small style={{ color: 'red' }}>{error}</small><br /></>}<br />
-            <input type="button" value={loading ? 'Loading...' : 'Login'} onClick={handleLogin} disabled={loading} /><br />
         </div>
     );
 }
 
-const useFormInput = initialValue => {
-    const [value, setValue] = useState(initialValue);
-
-    const handleChange = e => {
-        setValue(e.target.value);
-    }
-    return {
-        value,
-        onChange: handleChange
-    }
-}
-
-export default Login;
+export default   LoginPage;
